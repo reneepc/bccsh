@@ -1,9 +1,6 @@
 #include "bccsh.h"
 #include "parser.h"
 
-void cmd(int argc, char** argv) {
-}
-
 // Realiza o update do prompt do terminal através da atualização do login e do diretório atual.
 void prompt_update(char* prompt) {
     // Libera memória anteriormente alocada para o prompt.
@@ -22,6 +19,20 @@ void prompt_update(char* prompt) {
     strncat(prompt, "} ", PROMPT_MAX);
 }
 
+void cmd(token* container) {
+    if(!strcmp(container->tokens[0], "mkdir")) {
+        mkdir(container->tokens[1], 0777);
+    } else if (!strcmp(container->tokens[0], "kill")) {
+        if(container->size < 2) {
+            printf("\nUso: \n");
+            printf("\tkill -<sinal> <pid>\n");
+        }
+    } else if (!strcmp(container->tokens[0], "ln")) {
+        printf("Linkando");
+    } else
+        print_token(container);
+}
+
 int main(int argc, char** argv) {
 
     char* prompt = malloc(sizeof(char)*PROMPT_MAX);
@@ -32,8 +43,10 @@ int main(int argc, char** argv) {
         if(strcmp(buf, "")) add_history(buf);
 
         token* token_container = new_token();
-        print_token(token_container);
+        add_token(token_container, buf);
+        cmd(token_container);
         destroy_token(token_container);
+        free(buf);
         prompt_update(prompt);
     }
     printf("\n");

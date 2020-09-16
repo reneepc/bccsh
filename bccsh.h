@@ -5,13 +5,14 @@
 #include <pwd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "parser.h"
 
 #define PROMPT_MAX PATH_MAX + NAME_MAX
 #define PWD_MAX 1024
 
-void cmd(int argc, char** argv);
-
 void prompt_update(char* prompt);
+
+void cmd(token* container);
 
 #endif
 
