@@ -20,15 +20,23 @@ void prompt_update(char* prompt) {
 }
 
 void cmd(token* container) {
-    if(!strcmp(container->tokens[0], "mkdir")) {
+    if(!strcmp(container->tokens[0], "exit")) {
+        exit(EXIT_SUCCESS);
+    }
+    else if(!strcmp(container->tokens[0], "mkdir")) {
         mkdir(container->tokens[1], 0777);
     } else if (!strcmp(container->tokens[0], "kill")) {
         if(container->size < 2) {
             printf("\nUso: \n");
             printf("\tkill -<sinal> <pid>\n");
         }
+        int sinal = -atoi(container->tokens[1]);
+        pid_t processo = atoi(container->tokens[2]);
+        kill(processo, sinal);
     } else if (!strcmp(container->tokens[0], "ln")) {
-        printf("Linkando");
+        if(!strcmp(container->tokens[1], "-s")) {
+            symlink(container->tokens[2], container->tokens[3]);
+        }
     } else
         print_token(container);
 }
