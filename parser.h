@@ -23,4 +23,6 @@ void resize_container(token* token_container);
 
 token* parse(char* line);
 
+void print_token(token* container);
+
 #endif
