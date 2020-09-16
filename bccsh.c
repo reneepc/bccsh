@@ -32,11 +32,11 @@ int main(int argc, char** argv) {
         if(strcmp(buf, "")) add_history(buf);
 
         token* token_container = new_token();
+        print_token(token_container);
         destroy_token(token_container);
-        free(buf);
         prompt_update(prompt);
     }
-
+    printf("\n");
     free(prompt);
     return 0;
 }
