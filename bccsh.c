@@ -34,7 +34,6 @@ int main(int argc, char** argv) {
         token* token_container = new_token();
         print_token(token_container);
         destroy_token(token_container);
-        free(buf);
         prompt_update(prompt);
     }
     printf("\n");
