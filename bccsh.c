@@ -37,6 +37,18 @@ void cmd(token* container) {
         if(!strcmp(container->tokens[1], "-s")) {
             symlink(container->tokens[2], container->tokens[3]);
         }
+    } else if (container->tokens[0][0] == '.' || container->tokens[0][0] == '/') {
+        char* args[container->size + 1];
+        for(int i = 0; i < container->size; i++) {
+            args[i] = container->tokens[i];
+        }
+        args[container->size] = NULL;
+        pid_t pid = fork();
+        if(pid == 0) {
+            execve(container->tokens[0], args, NULL);
+        } else {
+            waitpid(-1, NULL, 0);
+        }
     } else
         print_token(container);
 }

@@ -7,6 +7,7 @@
 #include <readline/history.h>
 #include "parser.h"
 #include <signal.h>
+#include <sys/wait.h>
 
 #define PROMPT_MAX PATH_MAX + NAME_MAX
 #define PWD_MAX 1024
