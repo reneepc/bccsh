@@ -1,0 +1,53 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{placeins}
+
+\author{Renê Cardozo \\ 
+        rene.cardozo@usp.br}
+
+\title{BCCSH}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Composição}
+
+O executável bccsh é composto de dois módulos: parser e bccsh. Além disso é utilizada a biblioteca readline, a qual tem
+seu caminho encontrado pela ferramenta pkgconfig.
+
+\subsection{Parser}
+
+O parser é responsável por receber a linha de caracteres retornada pela função readline da biblioteca readline e separar
+cada palavra em um vetor de argumentos, os quais serão reconhecidos pelo bccsh posteriormente e determinarão qual
+comando deverá ser executado.
+
+Este parser foi adotado pensando em possibilitar a execução de qualquer binário pelo shell, bem como unificar o
+processo de execução de comandos internos e outros programas do sistema.
+
+\subsection{Bccsh}
+
+O sheel propriamente dito é implementado no arquivo bccsh.c, o qual realiza a leitura de inputs pelo usuário utilizando
+a função readline, sendo lida uma linha por vez. Após o armazenamento da linha em um buffer, caso a linha não seja
+vazia, esta será armazenada no histórico através da função add\_history da biblioteca readline, podendo ser acessada,
+por padrão, utilizando as setas do teclado.
+
+Uma vez salvo no histórico, a linha será utilizada pelo parser para criar um vetor com as palavras digitadas. As quais
+utilizarão a função cmd para determinar qual comando será executado. Podendo este ser:
+
+\begin{itemize}
+    \item mkdir <diretório>
+    \item kill -<sinal> <PID>
+    \item ln -s <arquivo> <link>
+    \item Qualquer binário do sistema iniciado por "/" ou ".".
+\end{itemize}
+
+O parser não realiza o reconhecimento de strings dentro de aspas e separadas por espaços, uma vez que o reconhecimento
+das palavras é feito através da sua divisão em cada espaço em branco encontrado pela função strtok da biblioteca
+string.
+\end{document}
+
