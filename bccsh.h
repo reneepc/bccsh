@@ -14,6 +14,10 @@
 
 void prompt_update(char* prompt);
 
+int kill_process(token* container);
+
+int execute(token* container);
+
 void cmd(token* container);
 
 #endif

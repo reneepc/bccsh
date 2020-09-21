@@ -1,6 +1,7 @@
 #include "parser.h"
 
-// Inicializa um container de palavras (tokens), tendo como capacidade máxima o valor ARGS_MAX = 10.
+// Inicializa um container de palavras (tokens), tendo como
+// capacidade máxima o valor ARGS_MAX = 10.
 token* new_token() {
     token* token_container = (token*)malloc(sizeof(token));
     token_container->tokens = (char**)malloc(sizeof(char*)*ARGS_MAX);
@@ -11,7 +12,8 @@ token* new_token() {
     token_container->max = ARGS_MAX;
 }
 
-// Inicializa um container de palavras tendo como capacidade máxima o argumento max.
+// Inicializa um container de palavras tendo como capacidade
+// máxima o argumento max.
 token* new_token_max(size_t max) {
     token* token_container = (token*)malloc(sizeof(token));
     token_container->tokens = (char**)malloc(sizeof(char*)*max);
@@ -23,7 +25,7 @@ token* new_token_max(size_t max) {
     return token_container;
 }
 
-// Libera a memória de cada string armazenada e do container
+// Libera a memória de cada string armazenada e do container.
 void destroy_token(token* token_container) {
     for(int i = 0; i < token_container->size; i++) {
         free(token_container->tokens[i]);
@@ -33,8 +35,9 @@ void destroy_token(token* token_container) {
 }
 
 
-// Adiciona todas as palavras pertencentes à string line, as quais são armazenadas individualmente. A estrutura também
-// realiza a contagem desta palavras pelo atributo size.
+// Adiciona todas as palavras pertencentes à string line,
+// as quais são armazenadas individualmente. A estrutura
+// também realiza a contagem desta palavras pelo atributo size.
 size_t add_token(token* token_container, char* line) {
     char delim[] = " ";
     char* token;
@@ -48,7 +51,9 @@ size_t add_token(token* token_container, char* line) {
     return token_container->size;
 }
 
-// Cria um novo container com o dobro de capacidade que o container anterior, copiando todas as strings do anterior  para o novo e liberando a memória associada com o antigo.
+// Cria um novo container com o dobro de capacidade que o
+// container anterior, copiando todas as strings do anterior
+// para o novo e liberando a memória associada com o antigo.
 void resize_container(token* token_container) {
     token* new_container = new_token_max(token_container->max*2);
     for(int i = 0; i < token_container->size; i++) {
