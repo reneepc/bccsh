@@ -8,3 +8,6 @@ doc/bccsh.pdf: doc/bccsh.tex
 
 parser.o: parser.c parser.h util.h
 	gcc parser.c -c
+
+simulador: simulador.c
+	gcc simulador.c -o simulador
