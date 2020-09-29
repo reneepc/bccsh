@@ -44,6 +44,9 @@ int read_file(char* path, proc *processes) {
     return i;
 }
 
+// https://pubs.opengroup.org/onlinepubs/9699919799/functions/sigtimedwait.html
+// https://pubs.opengroup.org/onlinepubs/9699919799/functions/sigwait.html
+// https://www.gnu.org/software/libc/manual/html_node/Miscellaneous-Signals.html
 void first_come_first_served(proc *processes, int process_count, pthread_t *threads){
     int i;
 
@@ -59,6 +62,7 @@ void first_come_first_served(proc *processes, int process_count, pthread_t *thre
     }
 
 }
+
 
 void *ThreadFCFS (void *p) {
     proc *processes = (proc *) p;
