@@ -44,6 +44,26 @@ int read_file(char* path, proc *processes) {
     return i;
 }
 
+
+
+void *ThreadFCFS (void *p) {
+    proc *processes = (proc *) p;
+    while(1){
+        if(processes->t0 <= sec) {
+            pthread_mutex_lock(&mutex);
+            printf("%d\t%s\t%d\t%d\t%d\n", sec, processes->name, processes->t0, processes->dt, processes->deadline);
+            sleep(processes->dt);
+            sec += processes->dt;
+            pthread_mutex_unlock(&mutex);
+            return NULL;
+        }
+        else{
+            sleep(1);
+        }
+    }
+    return NULL;
+}
+
 // https://pubs.opengroup.org/onlinepubs/9699919799/functions/sigtimedwait.html
 // https://pubs.opengroup.org/onlinepubs/9699919799/functions/sigwait.html
 // https://www.gnu.org/software/libc/manual/html_node/Miscellaneous-Signals.html
@@ -63,24 +83,6 @@ void first_come_first_served(proc *processes, int process_count, pthread_t *thre
 
 }
 
-
-void *ThreadFCFS (void *p) {
-    proc *processes = (proc *) p;
-    while(1){
-        if(processes->t0 <= sec) {
-            pthread_mutex_lock(&mutex);
-            printf("%d\t%s\t%d\t%d\t%d\n", sec, processes->name, processes->t0, processes->dt, processes->deadline);
-            sec += processes->dt;
-            sleep(processes->dt);
-            pthread_mutex_unlock(&mutex);
-            return NULL;
-        }
-        else{
-            sleep(1);
-        }
-    }
-    return NULL;
-}
 
 void shortest_remaining_time_next(){
 
