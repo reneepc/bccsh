@@ -1,7 +1,13 @@
 #include "simulador.h"
+#define _GNU_SOURCE
+#include <sched.h>
+
 pthread_t threads[THREAD_MAX];
 pthread_mutex_t mutex;
 int sec = 1;
+int verbose = 0;
+int mudanca_de_contexto = -1; // mudanças de contexto FCFS = n-1 numero de processos?
+FILE* exit_file;
 
 proc new_proc(char* name, int t0, int dt, int deadline) {
     proc process;
@@ -38,6 +44,7 @@ int read_file(char* path, proc *processes) {
         proc p = new_proc(name, t0, dt, deadline);
         processes[i] = p;
         i++;
+        if (verbose)    printf("[Novo processo\t%s %d %d %d]\n", name, t0, dt, deadline);
     }
     fclose(proc_file);
     
@@ -45,16 +52,23 @@ int read_file(char* path, proc *processes) {
 }
 
 
-
 void *ThreadFCFS (void *p) {
     proc *processes = (proc *) p;
     while(1){
         if(processes->t0 <= sec) {
             pthread_mutex_lock(&mutex);
-            printf("%d\t%s\t%d\t%d\t%d\n", sec, processes->name, processes->t0, processes->dt, processes->deadline);
+            if (verbose)    
+                printf("[CPU em uso\t%s]\n", processes->name); //erro com sched_getcpu()
             sleep(processes->dt);
             sec += processes->dt;
+            mudanca_de_contexto++;
             pthread_mutex_unlock(&mutex);
+            if (verbose) {
+                printf("[CPU liberada\t%s]\n", processes->name); //erro com sched_getcpu()
+                printf("[Finalização\t%s]\n", processes->name);
+            }
+            fprintf(exit_file, "%s %d %d\n", processes->name, sec, sec - processes->t0);
+
             return NULL;
         }
         else{
@@ -72,11 +86,10 @@ void first_come_first_served(proc *processes, int process_count, pthread_t *thre
 
     printf("\n--------------------------------------------------\n");
     printf("[First come first served]\n");
-    printf("s\tprocesso\tt0\tdt\tdeadline\n");
-    printf("--------------------------------------------------\n");
+    printf("--------------------------------------------------\n\n");
     for (i = 0; i < process_count; i++){
         if(pthread_create(&threads[i], NULL, ThreadFCFS, (void *)&processes[i])){
-            printf("[Erro ao criar a thread %d.]", &i);
+            printf("[Erro ao criar a thread %d.]", i);
             exit(1);
         }
     }
@@ -94,13 +107,21 @@ void round_robin(){
 
 int main(int argc, char** argv) {
     int escalonador, process_count;
-    char* exit = argv[3];
-    char* d = argv[4];
     pthread_t threads[THREAD_MAX];
-    int i;
     proc processes[THREAD_MAX];
     pthread_mutex_init(&mutex, NULL);
     escalonador = atoi(argv[1]);
+    int i;
+
+    if (argc > 4)
+        verbose += 1;
+
+    exit_file = fopen(argv[3], "w");
+
+    if(exit_file == NULL) {
+        printf(stderr, "[O arquivo %s não pôde ser criado]\n", exit);
+        exit(EXIT_FAILURE);
+    }
 
     process_count = read_file(argv[2], &processes);
 
@@ -117,6 +138,7 @@ int main(int argc, char** argv) {
         pthread_join(threads[i], NULL);
     }
 
+    fprintf(exit_file, "%d\n", mudanca_de_contexto);
 
     pthread_mutex_destroy(&mutex);
     return 0;
