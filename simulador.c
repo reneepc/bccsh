@@ -1,6 +1,4 @@
 #include "simulador.h"
-#define _GNU_SOURCE
-#include <sched.h>
 
 pthread_t threads[THREAD_MAX];
 pthread_mutex_t mutex;
@@ -58,13 +56,13 @@ void *ThreadFCFS (void *p) {
         if(processes->t0 <= sec) {
             pthread_mutex_lock(&mutex);
             if (verbose)    
-                printf("[CPU em uso\t%s]\n", processes->name); //erro com sched_getcpu()
+                printf("[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu()); //erro com sched_getcpu()
             sleep(processes->dt);
             sec += processes->dt;
             mudanca_de_contexto++;
             pthread_mutex_unlock(&mutex);
             if (verbose) {
-                printf("[CPU liberada\t%s]\n", processes->name); //erro com sched_getcpu()
+                printf("[CPU liberada\t%s, %d]\n", processes->name, sched_getcpu()); //erro com sched_getcpu()
                 printf("[Finalização\t%s]\n", processes->name);
             }
             fprintf(exit_file, "%s %d %d\n", processes->name, sec, sec - processes->t0);
@@ -115,24 +113,19 @@ void shortest_remaining_time_next(proc *processes, int process_count, pthread_t 
     printf("[Shortest remaining time next]\n");
     printf("name  t0  dt  sec\n");
     printf("--------------------------------------------------\n\n");
-
-    for (i = 0; i <= process_count; i++) {
-        j = i++;
-        while(processes[j].t0 < sec) {
-            if (processes[j].dt < SRTN) {
-                SRTN = processes[j].dt;
-                temp = &processes[j - 1];
-                processes[j - 1] = processes[j];
-                processes[j] = *temp;
-            }
-            j++;
+    for (i = 1; i <= process_count; i++) {
+        j = i - 1;
+        temp = &processes[i];
+        while(j >=0 && processes[j].dt < SRTN) {
+            processes[j + 1] = processes[j];
+            j--;
         }
+        processes[j + 1] = *temp;
         for (int k = 0; k < process_count; k++)
             printf("%s\n", processes[k].name);
         printf("\n\n");
        //printf("%s %d % d %d\n", processes[i].name, processes[i].t0, processes[i].dt, sec);
         sec++;
-
     }
     
 
@@ -157,7 +150,7 @@ int main(int argc, char** argv) {
     exit_file = fopen(argv[3], "w");
 
     if(exit_file == NULL) {
-        printf(stderr, "[O arquivo %s não pôde ser criado]\n", exit);
+        printf("[O arquivo %s não pôde ser criado]\n", (char*)exit);
         exit(EXIT_FAILURE);
     }
 
