@@ -87,19 +87,57 @@ void first_come_first_served(proc *processes, int process_count, pthread_t *thre
     printf("\n--------------------------------------------------\n");
     printf("[First come first served]\n");
     printf("--------------------------------------------------\n\n");
+
     for (i = 0; i < process_count; i++){
         if(pthread_create(&threads[i], NULL, ThreadFCFS, (void *)&processes[i])){
             printf("[Erro ao criar a thread %d.]", i);
             exit(1);
         }
     }
+    
+    for (i = 0; i < process_count; i++) {
+        pthread_join(threads[i], NULL);
+    }
 
 }
 
+void *ThreadSRTN (void *p) {
+    proc *processes = (proc *) p;
+    int SRTN;
+}
 
-void shortest_remaining_time_next(){
+void shortest_remaining_time_next(proc *processes, int process_count, pthread_t *threads){
+    int i, j;
+    int SRTN;
+    proc *temp;
+
+    printf("\n--------------------------------------------------\n");
+    printf("[Shortest remaining time next]\n");
+    printf("name  t0  dt  sec\n");
+    printf("--------------------------------------------------\n\n");
+
+    for (i = 0; i <= process_count; i++) {
+        j = i++;
+        while(processes[j].t0 < sec) {
+            if (processes[j].dt < SRTN) {
+                SRTN = processes[j].dt;
+                temp = &processes[j - 1];
+                processes[j - 1] = processes[j];
+                processes[j] = *temp;
+            }
+            j++;
+        }
+        for (int k = 0; k < process_count; k++)
+            printf("%s\n", processes[k].name);
+        printf("\n\n");
+       //printf("%s %d % d %d\n", processes[i].name, processes[i].t0, processes[i].dt, sec);
+        sec++;
+
+    }
+    
 
 }
+
 
 void round_robin(){
 
@@ -128,15 +166,12 @@ int main(int argc, char** argv) {
     if (escalonador == 1)
         first_come_first_served(processes, process_count, threads);
     else if(escalonador == 2)
-        shortest_remaining_time_next();
+        shortest_remaining_time_next(processes, process_count, threads);
     else if(escalonador == 3)
         round_robin();
     else
         printf("[Não existe escalonador identificado pelo número %i.]\n", escalonador);
 
-    for (i = 0; i < process_count; i++) {
-        pthread_join(threads[i], NULL);
-    }
 
     fprintf(exit_file, "%d\n", mudanca_de_contexto);
 

@@ -24,7 +24,7 @@ int read_file(char* path, proc *processes);
 
 void first_come_first_served(proc *processes, int process_count, pthread_t *threads);
 
-void shortest_remaining_time_next();
+void shortest_remaining_time_next(proc *processes, int process_count, pthread_t *threads);
 
 void round_robin();
 
