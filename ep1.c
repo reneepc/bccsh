@@ -1,4 +1,5 @@
 #include "ep1.h"
+#include <pthread.h>
 
 pthread_t threads[THREAD_MAX];
 pthread_mutex_t mutex;
