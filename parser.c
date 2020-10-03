@@ -44,13 +44,15 @@ size_t add_token(token* token_container, char* line) {
     token = strtok(line, delim);
 
     while(token != NULL) {
-        if(token_container->size == token_container->max) resize_container(token_container);
+        //if(token_container->size == token_container->max) resize_container(token_container);
         strcpy(token_container->tokens[token_container->size++], token);
         token = strtok(NULL, delim);
     }
     return token_container->size;
 }
 
+
+/* Não utilizada por causar segfault */
 // Cria um novo container com o dobro de capacidade que o
 // container anterior, copiando todas as strings do anterior
 // para o novo e liberando a memória associada com o antigo.
