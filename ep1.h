@@ -22,6 +22,8 @@ void print_proc(proc process);
 
 int read_file(char* path, proc *processes);
 
+int comp_dt(void* p1, void* p2);
+
 void first_come_first_served(proc *processes, int process_count, pthread_t *threads);
 
 void shortest_remaining_time_next(proc *processes, int process_count, pthread_t *threads);

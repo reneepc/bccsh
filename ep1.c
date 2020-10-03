@@ -27,6 +27,12 @@ void print_proc(proc process) {
     
 }
 
+int comp_proc(void* p1, void* p2) {
+    if(((proc*)p1)->dt < ((proc*)p2)->dt) return -1;
+    else if(((proc*)p1)->dt > ((proc*)p2)->dt) return 1;
+    return 0;
+}
+
 int read_file(char* path, proc *processes) {
     FILE* proc_file = fopen(path, "r");
     char name[PROC_NAME_MAX];
@@ -191,6 +197,14 @@ int main(int argc, char** argv) {
     }
 
     process_count = read_file(argv[2], &processes);
+    for(int i = 0; i < process_count; i++)
+        print_proc(processes[i]);
+    
+    qsort(processes, process_count, sizeof(proc), comp_proc);
+
+    printf("\n\nOrdenado:\n");
+    for(int i = 0; i < process_count; i++)
+        print_proc(processes[i]);
 
     if (escalonador == 1)
         first_come_first_served(processes, process_count, threads);
