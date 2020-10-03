@@ -197,20 +197,13 @@ int main(int argc, char** argv) {
     }
 
     process_count = read_file(argv[2], &processes);
-    for(int i = 0; i < process_count; i++)
-        print_proc(processes[i]);
-    
-    qsort(processes, process_count, sizeof(proc), comp_proc);
-
-    printf("\n\nOrdenado:\n");
-    for(int i = 0; i < process_count; i++)
-        print_proc(processes[i]);
 
     if (escalonador == 1)
         first_come_first_served(processes, process_count, threads);
-    else if(escalonador == 2)
+    else if(escalonador == 2) {
+        qsort(processes, process_count, sizeof(proc), comp_proc);
         shortest_remaining_time_next(processes, process_count, threads);
-    else if(escalonador == 3)
+    } else if(escalonador == 3)
         round_robin();
     else
         printf("[Não existe escalonador identificado pelo número %i.]\n", escalonador);
