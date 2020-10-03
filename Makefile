@@ -1,5 +1,6 @@
 bccsh: bccsh.c bccsh.h parser.o util.h doc/bccsh.pdf
 	gcc bccsh.c parser.o -o bccsh -I `pkg-config --cflags --libs readline`
+	gcc -pthread ep1.c -o ep1 
 	rm *.o
 
 doc/bccsh.pdf: doc/bccsh.tex
@@ -9,5 +10,3 @@ doc/bccsh.pdf: doc/bccsh.tex
 parser.o: parser.c parser.h util.h
 	gcc parser.c -c
 
-simulador: simulador.c
-	gcc -pthread simulador.c -o simulador 
