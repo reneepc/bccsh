@@ -10,4 +10,4 @@ parser.o: parser.c parser.h util.h
 	gcc parser.c -c
 
 simulador: simulador.c
-	gcc simulador.c -o simulador
+	gcc -pthread simulador.c -o simulador 
