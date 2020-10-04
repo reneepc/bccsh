@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     int t0 = 1;
     int dt;
     for(int i = 0; i < num_processes; i++) {
-        // Gera um intervalo dt entre 1 e 5;
+        // Gera um intervalo dt entre 2 e 5;
         dt = ((rand() % 5) + 2);
         snprintf(line, MAX_BUF, "Processo%d %d %d %d", i, t0, dt, t0+dt+(rand()%15)); 
         // Gera uma adição em t0 entre 0 e 3.

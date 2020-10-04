@@ -1,0 +1,15 @@
+Autores: Renê Cardozo - 9797315
+         Verônica Stocco - 6828626
+
+A compilação do arquivo é realizada apenas utilizando o comando make, o qual é responsável por compilar o shell (bccsh),
+o simulador de escalonador de processos (ep1), o gerador de arquivos de processos (gerador_de_processos/gerador) e a
+apresentação (doc/apresentação.pdf). Além de remover arquivos intermediários da compilação dos programas e do pdf.
+
+A execução do bccsh é feita utilizando "./bccsh".
+
+A execução do ep1 é feita utilizando "./ep1 <1 ou 2> <arquivo-de-entrada> <arquivo-de-saída> [d]".  
+-> No primeiro argumento, 1 para a utilização do algoritmo First-Come, First-Served e 2 para a Shortest Remaining Time Next.  
+-> d, como quarto argumento, é um parâmetro opicional que ativa o modo verboso do simulador.  
+-> Por padrão, os arquivos de entrada são armazenados no diretório entrada e os de saída no diretório saida.
+
+A apresentação de slides, apresentacao.pdf, está no diretório doc.

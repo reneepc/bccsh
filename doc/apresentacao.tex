@@ -7,11 +7,11 @@
 \usetheme{Madrid}
 
 \author{Renê Cardozo - 9797315 \\ 
-        Verônica Stocco - 9797315 \\
+        Verônica Stocco - 6828626 \\
         rene.cardozo@usp.br \\
         veronica.stocco@usp.br}
 
-\title{Ep1}
+\title{EP1}
 \institute{Instituto de Matemática e Estatística \\
 Universidade de São Paulo}
 
@@ -81,7 +81,8 @@ O algoritmo Round-Robin não foi implementado por falta de tempo.
 \end{block}
 
 Neste arquivo é utilizada a função read\_file para ler os arquivos da pasta entrada, na qual são armazenados os arquivos
-criados pelo gerador de processos.
+criados pelo gerador de processos, os quais são organizados em um array de structs onde é armazenado o nome, t0, dt e
+    deadline de cada processo.
 \end{frame}
 
 \begin{frame}
@@ -97,6 +98,9 @@ A implementação dos algoritmos foi feita da seguinte forma:
         com menor dt que chegam antes.
 \end{itemize}
 
+Os algoritmos armazenam a saída no arquivo especificado pelo terceiro parâmetro do executável ./ep1, no qual é escrito o
+nome do processo o tempo atual do simulador e o tempo do simulador menos o tempo inicial do processo.
+
 \end{frame}
 
 \begin{frame}
@@ -105,16 +109,24 @@ A criação de processos para uso pelo simulador é feito pelo arquivo gerador.c
     Este programa é executado da forma "./gerador <número-de-processos [semente]", sendo a semente opcional e por
     padrão igual a 0.
 \begin{itemize}
-    \item t0 inicia-se com 1 e é incrementado em um inteiro aleatório entre 0 e 3.
+    \item t0 inicia-se com 1 e é incrementado em uminteiro aleatório entre 0 e 3.
     \item dt é gerado como um inteiro aleatório entre 2 e 5.
     \item a deadline do processo é gerada por t0 + dt + x, sendo x um número inteiro aleatório entre 0 e 15.
 \end{itemize}
-
-Os arquivos produzidos são armazenados na pasta saida.
 \end{frame}
 
 \begin{frame}
 \frametitle{Testes}
+Os testes foram realizados a partir da geração de três arquivos de processos, com 5, 50 e 500 processos.
+
+A execução de cada teste foi realizada para os dois algoritmos implementados e executadas trinta vezes para cada arquivo
+de 5, 50 e 500 processos.
+
+A execução usou como base:
+\begin{itemize}
+    \item ./bccsh
+    \item ./ep1 <1 ou 2> entrada/<arquivo-de-entrada> saida/<arquivo-de-saida> d
+\end{itemize}
 \end{frame}
 \end{document}
 

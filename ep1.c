@@ -1,13 +1,17 @@
 #include "ep1.h"
 #include <pthread.h>
 
+// Cria vetor global de threads com no máximo 20000 threads
 pthread_t threads[THREAD_MAX];
 pthread_mutex_t mutex;
+
+// Variável global para a contagem de tempo.
 int sec = 1;
 int verbose = 0;
 int mudanca_de_contexto = -1; // mudanças de contexto FCFS = n-1 numero de processos?
-FILE* exit_file;
+FILE* exit_file; // Arquivo de saída dos escalonadores
 
+// Cria processo.
 proc new_proc(char* name, int t0, int dt, int deadline) {
     proc process;
     strcpy(process.name, name);
@@ -17,6 +21,9 @@ proc new_proc(char* name, int t0, int dt, int deadline) {
     return process;
 }
 
+// Imprime informações sobre o processo.
+//
+// Utilizada para Debugging.
 void print_proc(proc process) {
     printf("---------------------------------------------\n");
     printf("Nome: %s\n", process.name);
@@ -27,12 +34,17 @@ void print_proc(proc process) {
     
 }
 
+// Comparador utilizado para realizar qsort na lista de processos, o qual compara a soma dos atributos dt e t0 para
+// determinar qual processo será selecionado no Shortest Remaining Time Next.
 int comp_proc(void* p1, void* p2) {
     if(((proc*)p1)->dt + ((proc*)p1)->t0 < ((proc*)p2)->dt + ((proc*)p2)->t0) return -1;
     else if(((proc*)p1)->dt + ((proc*)p1)->t0 > ((proc*)p2)->dt + ((proc*)p2)->t0) return 1;
     return 0;
 }
 
+// Realiza a leitura do arquivo de processos, retornando a quantidade de processos lida.
+//
+// Caso o quarto argumento do executável seja "d", a função indica a criação de cada processo.
 int read_file(char* path, proc *processes) {
     FILE* proc_file = fopen(path, "r");
     char name[PROC_NAME_MAX];
@@ -58,6 +70,12 @@ int read_file(char* path, proc *processes) {
 }
 
 
+// Função de execução das threads no algoritmo First-Come, First-Served, a qual realiza a execução dos processos de
+// maneira ordenada, realizando o travamento da seção crítica que vai desde a simulação de execução do processo pela
+// função sleep() até a escrita nos arquivos de saída.
+//
+// Caso a flag "d" seja especificada no quarto argumento do executável a função indicará em stderr quando a CPU entrou
+// em uso, foi liberada e finalizada.
 void *ThreadFCFS (void *p) {
     proc *processes = (proc *) p;
     while(1){
@@ -104,10 +122,14 @@ void first_come_first_served(proc *processes, int process_count, pthread_t *thre
 
 }
 
+// Função que realiza a execução das threads dos processos, a qual espera que o tempo inicial do processo ocorra para
+// realizar a simulação.
+//
+// Caso a flag "d" seja especificada no quarto argumento do executável, será printado o momento de início do processo
+// pela CPU, quando a CPU é liberada e o processo é finalizado.
 void *ThreadSRTN (void *p) {
     proc *processes = (proc *) p;
     while(1){
-        if(processes->t0 < sec) sleep(sec - processes->t0);
         pthread_mutex_lock(&mutex);
         if (verbose)    
             fprintf(stderr, "[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu());
@@ -126,6 +148,8 @@ void *ThreadSRTN (void *p) {
     return NULL;
 }
 
+// Recebe a lista de processos ordenada de acordo com a soma dos atributos dt e t0, para que estes sejamexecutados
+// conforme seu tempo restante.
 void shortest_remaining_time_next(proc *processes, int process_count, pthread_t *threads){
     qsort(processes, process_count, sizeof(proc), comp_proc);
     
