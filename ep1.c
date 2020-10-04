@@ -100,7 +100,7 @@ void first_come_first_served(proc *processes, int process_count, pthread_t *thre
         }
         pthread_join(threads[i], NULL);
     }
-    
+
 }
 
 void *ThreadSRTN (void *p) {
