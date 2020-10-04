@@ -1,4 +1,4 @@
-bccsh: bccsh.c bccsh.h parser.o util.h doc/bccsh.pdf gerador_de_processos/gerador.c
+bccsh: bccsh.c bccsh.h parser.o util.h doc/bccsh.pdf gerador_de_processos/gerador.c ep1.c
 	gcc bccsh.c parser.o -o bccsh -I `pkg-config --cflags --libs readline`
 	gcc -pthread ep1.c -o ep1 
 	gcc gerador_de_processos/gerador.c -o gerador_de_processos/gerador

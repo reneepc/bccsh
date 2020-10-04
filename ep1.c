@@ -49,7 +49,8 @@ int read_file(char* path, proc *processes) {
         proc p = new_proc(name, t0, dt, deadline);
         processes[i] = p;
         i++;
-        if (verbose)    printf("[Novo processo\t%s %d %d %d]\n", name, t0, dt, deadline);
+        if (verbose)    
+            fprintf(stderr, "[Novo processo\t%s %d %d %d]\n", name, t0, dt, deadline);
     }
     fclose(proc_file);
     
@@ -63,20 +64,19 @@ void *ThreadFCFS (void *p) {
         if(processes->t0 <= sec) {
             pthread_mutex_lock(&mutex);
             if (verbose)    
-                printf("[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu());
+                fprintf(stderr, "[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu());
             sleep(processes->dt);
             sec += processes->dt;
             mudanca_de_contexto++;
             if (verbose) {
-                printf("[CPU liberada\t%s, %d]\n", processes->name, sched_getcpu());
-                printf("[Finalização\t%s]\n", processes->name);
+                fprintf(stderr, "[CPU liberada\t%s, %d]\n", processes->name, sched_getcpu());
+                fprintf(stderr, "[Finalização\t%s]\n", processes->name);
             }
             fprintf(exit_file, "%s %d %d\n", processes->name, sec, sec - processes->t0);
             pthread_mutex_unlock(&mutex);
 
             return NULL;
-        }
-        else{
+        } else {
             sleep(1);
         }
     }
@@ -95,79 +95,50 @@ void first_come_first_served(proc *processes, int process_count, pthread_t *thre
 
     for (i = 0; i < process_count; i++){
         if(pthread_create(&threads[i], NULL, ThreadFCFS, (void *)&processes[i])){
-            printf("[Erro ao criar a thread %d.]", i);
+            fprintf(stderr, "[Erro ao criar a thread %d.]", i);
             exit(1);
         }
         pthread_join(threads[i], NULL);
     }
+    
 
 }
 
 void *ThreadSRTN (void *p) {
     proc *processes = (proc *) p;
     while(1){
-        if(processes->t0 <= sec) {
-            pthread_mutex_lock(&mutex);
-            if (verbose)    
-                printf("[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu());
-            sleep(processes->dt);
-            sec += processes->dt;
-            mudanca_de_contexto++;
-            if (verbose) {
-                printf("[CPU liberada\t%s, %d]\n", processes->name, sched_getcpu());
-                printf("[Finalização\t%s]\n", processes->name);
-            }
-            fprintf(exit_file, "%s %d %d\n", processes->name, sec, sec - processes->t0);
-            pthread_mutex_unlock(&mutex);
+        pthread_mutex_lock(&mutex);
+        if (verbose)    
+            fprintf(stderr, "[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu());
+        sleep(processes->dt);
+        sec += processes->dt;
+        mudanca_de_contexto++;
+        if (verbose) {
+            fprintf(stderr, "[CPU liberada\t%s, %d]\n", processes->name, sched_getcpu());
+            fprintf(stderr, "[Finalização\t%s]\n", processes->name);
+        }
+        fprintf(exit_file, "%s %d %d\n", processes->name, sec, sec - processes->t0);
+        pthread_mutex_unlock(&mutex);
 
-            return NULL;
-        }
-        else{
-            sleep(1);
-        }
+        return NULL;
     }
     return NULL;
 }
 
 void shortest_remaining_time_next(proc *processes, int process_count, pthread_t *threads){
-    int i, j;
-    int min_dt;
-    int helper[THREAD_MAX];
-    int current;
-
-    for(i = 0; i < process_count; i++)
-        helper[i] = i;
-
+    qsort(processes, process_count, sizeof(proc), comp_proc);
+    
     printf("\n--------------------------------------------------\n");
-    printf("[Shortest remaining time next]\n");
-    printf("name  t0  dt  sec\n");
+    printf("[Shortest Remaining Time Next]\n");
     printf("--------------------------------------------------\n\n");
-    min_dt = processes[0].dt;
 
-    for (i = 1; i < process_count; i++) {
-        current = helper[i];
-        j = i - 1;
-        while (j >= 0 && processes[j].t0 == processes[j+1].t0 && processes[helper[j]].dt > processes[current].dt) {
-            helper[j + 1] = helper[j];
-            j--;
-        }
-        helper[j+ 1] = current;
-    }
-
-
-    for (i = 0; i < process_count; i++){
-        printf(" %s \n", processes[helper[i]].name);
+    for (int i = 0; i < process_count; i++){
         if(pthread_create(&threads[i], NULL, ThreadSRTN, (void *)&processes[i])){
-            printf("[Erro ao criar a thread %d.]", i);
+            fprintf(stderr, "[Erro ao criar a thread %d.]", i);
             exit(1);
         }
+        pthread_join(threads[i], NULL);
     }
-    
-    for (i = 0; i < process_count; i++) {
-        pthread_join(threads[helper[i]], NULL);
-    }
-
-        
 }
 
 
@@ -183,13 +154,13 @@ int main(int argc, char** argv) {
     escalonador = atoi(argv[1]);
     int i;
 
-    if (argc > 4)
+    if (!strcmp(argv[4], "d"))
         verbose += 1;
 
     exit_file = fopen(argv[3], "w");
 
     if(exit_file == NULL) {
-        printf("[O arquivo %s não pôde ser criado]\n", (char*)exit);
+        fprintf(stderr, "[O arquivo %s não pôde ser criado]\n", (char*)exit);
         exit(EXIT_FAILURE);
     }
 
@@ -198,12 +169,11 @@ int main(int argc, char** argv) {
     if (escalonador == 1)
         first_come_first_served(processes, process_count, threads);
     else if(escalonador == 2) {
-        qsort(processes, process_count, sizeof(proc), comp_proc);
         shortest_remaining_time_next(processes, process_count, threads);
     } else if(escalonador == 3)
         round_robin();
     else
-        printf("[Não existe escalonador identificado pelo número %i.]\n", escalonador);
+        fprintf(stderr, "[Não existe escalonador identificado pelo número %i.]\n", escalonador);
 
 
     fprintf(exit_file, "%d\n", mudanca_de_contexto);
