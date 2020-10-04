@@ -98,12 +98,9 @@ void first_come_first_served(proc *processes, int process_count, pthread_t *thre
             printf("[Erro ao criar a thread %d.]", i);
             exit(1);
         }
-    }
-    
-    for (i = 0; i < process_count; i++) {
         pthread_join(threads[i], NULL);
     }
-
+    
 }
 
 void *ThreadSRTN (void *p) {
