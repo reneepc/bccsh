@@ -61,7 +61,7 @@ int read_file(char* path, proc *processes) {
 void *ThreadFCFS (void *p) {
     proc *processes = (proc *) p;
     while(1){
-        if(processes->t0 < sec) {
+        if(processes->t0 <= sec) {
             pthread_mutex_lock(&mutex);
             if (verbose)    
                 fprintf(stderr, "[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu());

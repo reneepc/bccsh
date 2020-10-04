@@ -1,34 +1,48 @@
-\documentclass{article}
+\documentclass{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{placeins}
 
-\author{Renê Cardozo \\ 
-        rene.cardozo@usp.br}
+\author{Renê Cardozo - 9797315 \\ 
+        Verônica Stocco - 9797315 \\
+        rene.cardozo@usp.br \\
+        veronica.stocco@usp.br}
 
-\title{BCCSH}
+\title{Ep1}
+\institute{Instituto de Matemática e Estatística \\
+Universidade de São Paulo}
 
 \date{}
 
 \begin{document}
-\maketitle
+\frame{\titlepage}
 
-\section{Composição}
+\begin{frame}
+
+\frametitle{BCCSH}
 
 O executável bccsh é composto de dois módulos: parser e bccsh. Além disso é utilizada a biblioteca readline, a qual tem
 seu caminho encontrado pela ferramenta pkgconfig.
 
-\subsection{Parser}
+\end{frame}
 
-O parser é responsável por receber a linha de caracteres retornada pela função readline da biblioteca readline e separar
-cada palavra em um vetor de argumentos, os quais serão reconhecidos pelo bccsh posteriormente e determinarão qual
-comando deverá ser executado.
+\begin{frame}
+\frametitle{Parser}
 
-Este parser foi adotado pensando em possibilitar a execução de qualquer binário pelo shell, bem como unificar o
-processo de execução de comandos internos e outros programas do sistema.
+\begin{itemize}
+\item O parser é responsável por receber a linha de caracteres retornada pela função readline da biblioteca readline e separar cada palavra em um vetor de argumentos, os quais serão reconhecidos pelo bccsh posteriormente e determinarão qual comando deverá ser executado.  
 
+\item Este parser foi adotado pensando em possibilitar a execução de qualquer binário pelo shell, bem como unificar o processo de execução de comandos internos e outros programas do sistema.  
+
+
+\item Há uma limitação de 10 strings para cada linha lida pelo parser.
+
+\end{itemize}
+\end{frame}
+
+\iffalse
 \subsection{Bccsh}
 
 O sheel propriamente dito é implementado no arquivo bccsh.c, o qual realiza a leitura de inputs pelo usuário utilizando
@@ -49,5 +63,6 @@ utilizarão a função cmd para determinar qual comando será executado. Podendo
 O parser não realiza o reconhecimento de strings dentro de aspas e separadas por espaços, uma vez que o reconhecimento
 das palavras é feito através da sua divisão em cada espaço em branco encontrado pela função strtok da biblioteca
 string.
+\fi
 \end{document}
 
