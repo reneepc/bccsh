@@ -5,6 +5,16 @@
 pthread_t threads[THREAD_MAX];
 pthread_mutex_t mutex;
 
+// Cria vetores globais para a tentativa de implementacao do Round Robin
+pthread_cond_t cond[THREAD_MAX];
+pthread_mutex_t locks[THREAD_MAX];
+
+// Cria vetor global para armazenar no maximo 2000 processos
+proc processes[THREAD_MAX];
+
+// Contador global de total de processos
+int process_count;
+
 // Variável global para a contagem de tempo.
 int sec = 1;
 int verbose = 0;
@@ -45,7 +55,7 @@ int comp_proc(void* p1, void* p2) {
 // Realiza a leitura do arquivo de processos, retornando a quantidade de processos lida.
 //
 // Caso o quarto argumento do executável seja "d", a função indica a criação de cada processo.
-int read_file(char* path, proc *processes) {
+int read_file(char* path) {
     FILE* proc_file = fopen(path, "r");
     char name[PROC_NAME_MAX];
     int t0;
@@ -104,7 +114,7 @@ void *ThreadFCFS (void *p) {
 // https://pubs.opengroup.org/onlinepubs/9699919799/functions/sigtimedwait.html
 // https://pubs.opengroup.org/onlinepubs/9699919799/functions/sigwait.html
 // https://www.gnu.org/software/libc/manual/html_node/Miscellaneous-Signals.html
-void first_come_first_served(proc *processes, int process_count, pthread_t *threads){
+void first_come_first_served(){
     int i;
 
     printf("\n--------------------------------------------------\n");
@@ -150,7 +160,7 @@ void *ThreadSRTN (void *p) {
 
 // Recebe a lista de processos ordenada de acordo com a soma dos atributos dt e t0, para que estes sejamexecutados
 // conforme seu tempo restante.
-void shortest_remaining_time_next(proc *processes, int process_count, pthread_t *threads){
+void shortest_remaining_time_next(){
     qsort(processes, process_count, sizeof(proc), comp_proc);
     
     printf("\n--------------------------------------------------\n");
@@ -166,15 +176,57 @@ void shortest_remaining_time_next(proc *processes, int process_count, pthread_t 
     }
 }
 
+// Tentativa de implementar o Round Robin 
+void *ThreadRR (void *i) {
+    int id = (int) i;
+    while(processes[id].dt > 0){
+
+        if(processes[id].t0 <= sec) {
+            pthread_mutex_lock(&locks[id]);
+            pthread_cond_wait(&cond[id], &locks[id]);
+            if (verbose)    
+                printf("[CPU em uso\t%s, %d]\n", processes[id].name, sched_getcpu());
+            sleep(QUANTUM);
+            sec += QUANTUM;
+            mudanca_de_contexto++;
+            processes[id].dt -= QUANTUM;
+            if (verbose) {
+                printf("[CPU liberada\t%s, %d]\n", processes[id].name, sched_getcpu());
+                printf("[Finalização\t%s]\n", processes[id].name);
+            }
+            fprintf(exit_file, "%s %d %d\n", processes[id].name, sec, sec - processes->t0);
+            pthread_cond_signal(&cond[(id + 1) % process_count]);
+            pthread_mutex_unlock(&locks[id]);
+        }
+        else{
+            sleep(QUANTUM);
+        }
+    }
+    return NULL;
+}
+
 
 void round_robin(){
+    int i = 0;
+    printf("\n--------------------------------------------------\n");
+    printf("[Round Robin]\n");
+    printf("--------------------------------------------------\n\n");
 
+
+
+    pthread_cond_signal(&cond[0]);
+    for (i = 0; i < process_count; i++){
+        if(pthread_create(&threads[i], NULL, ThreadRR, (void *)i)){
+            printf("[Erro ao criar a thread %d.]", i);
+            exit(1);
+        }
+        
+    }
+    pthread_cond_signal(&cond[0]);   
 }
 
 int main(int argc, char** argv) {
-    int escalonador, process_count;
-    pthread_t threads[THREAD_MAX];
-    proc processes[THREAD_MAX];
+    int escalonador;
     pthread_mutex_init(&mutex, NULL);
     escalonador = atoi(argv[1]);
     int i;
@@ -189,7 +241,7 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
 
-    process_count = read_file(argv[2], &processes);
+    process_count = read_file(argv[2]);
 
     if (escalonador == 1)
         first_come_first_served(processes, process_count, threads);

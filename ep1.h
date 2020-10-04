@@ -7,7 +7,7 @@
 #define GET_MAX 80
 #define NUM_MAX 12
 #define THREAD_MAX 20000
-#define QUANTUM 1000000000
+#define QUANTUM 1
 
 typedef struct proc_t {
     char name[PROC_NAME_MAX]; // Nome do processo
@@ -20,13 +20,13 @@ proc new_proc(char* name, int t0, int dt, int deadline);
 
 void print_proc(proc process);
 
-int read_file(char* path, proc *processes);
+int read_file(char* path);
 
 int comp_dt(void* p1, void* p2);
 
-void first_come_first_served(proc *processes, int process_count, pthread_t *threads);
+void first_come_first_served();
 
-void shortest_remaining_time_next(proc *processes, int process_count, pthread_t *threads);
+void shortest_remaining_time_next();
 
 void round_robin();
 
