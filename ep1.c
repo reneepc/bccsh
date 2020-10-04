@@ -28,8 +28,8 @@ void print_proc(proc process) {
 }
 
 int comp_proc(void* p1, void* p2) {
-    if(((proc*)p1)->dt < ((proc*)p2)->dt) return -1;
-    else if(((proc*)p1)->dt > ((proc*)p2)->dt) return 1;
+    if(((proc*)p1)->dt + ((proc*)p1)->t0 < ((proc*)p2)->dt + ((proc*)p2)->t0) return -1;
+    else if(((proc*)p1)->dt + ((proc*)p1)->t0 > ((proc*)p2)->dt + ((proc*)p2)->t0) return 1;
     return 0;
 }
 
@@ -61,7 +61,7 @@ int read_file(char* path, proc *processes) {
 void *ThreadFCFS (void *p) {
     proc *processes = (proc *) p;
     while(1){
-        if(processes->t0 <= sec) {
+        if(processes->t0 < sec) {
             pthread_mutex_lock(&mutex);
             if (verbose)    
                 fprintf(stderr, "[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu());
@@ -107,6 +107,7 @@ void first_come_first_served(proc *processes, int process_count, pthread_t *thre
 void *ThreadSRTN (void *p) {
     proc *processes = (proc *) p;
     while(1){
+        if(processes->t0 < sec) sleep(sec - processes->t0);
         pthread_mutex_lock(&mutex);
         if (verbose)    
             fprintf(stderr, "[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu());
