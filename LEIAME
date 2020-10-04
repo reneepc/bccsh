@@ -9,7 +9,7 @@ A execução do bccsh é feita utilizando "./bccsh".
 
 A execução do ep1 é feita utilizando "./ep1 <1 ou 2> <arquivo-de-entrada> <arquivo-de-saída> [d]".  
 -> No primeiro argumento, 1 para a utilização do algoritmo First-Come, First-Served e 2 para a Shortest Remaining Time Next.  
--> d, como quarto argumento, é um parâmetro opicional que ativa o modo verboso do simulador.  
+-> d, como quarto argumento, é um parâmetro opcional que ativa o modo verboso do simulador.  
 -> Por padrão, os arquivos de entrada são armazenados no diretório entrada e os de saída no diretório saida.
 
 A apresentação de slides, apresentacao.pdf, está no diretório doc.

@@ -109,7 +109,7 @@ A criação de processos para uso pelo simulador é feito pelo arquivo gerador.c
     Este programa é executado da forma "./gerador <número-de-processos [semente]", sendo a semente opcional e por
     padrão igual a 0.
 \begin{itemize}
-    \item t0 inicia-se com 1 e é incrementado em uminteiro aleatório entre 0 e 3.
+    \item t0 inicia-se com 1 e é incrementado em um inteiro aleatório entre 0 e 3.
     \item dt é gerado como um inteiro aleatório entre 2 e 5.
     \item a deadline do processo é gerada por t0 + dt + x, sendo x um número inteiro aleatório entre 0 e 15.
 \end{itemize}
@@ -127,6 +127,20 @@ A execução usou como base:
     \item ./bccsh
     \item ./ep1 <1 ou 2> entrada/<arquivo-de-entrada> saida/<arquivo-de-saida> d
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Máquinas Utilizadas}
+
+Foram utilizadas duas máquinas diferentes, uma com 12 e outra com 8 CPUs, as quais estão descritas no diretório doc
+    pelos arquivos doc/desc\_comp1 e doc/desc\_comp2 que registram as saídas do comando lscpu para cada uma das máquinas.
+
+
+\begin{block}{Limitações}
+A máquina 1, com 12 núcleos, sofreu aparente limitação pela utilização do Windows Subsystem for Linux, uma vez que
+    apenas uma CPU parece ter sido utilizada, o que pode ser observado pela saída "0" no modo verboso do simulador.
+\end{block}
 \end{frame}
 \end{document}
 
