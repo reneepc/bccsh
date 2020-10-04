@@ -67,12 +67,12 @@ void *ThreadFCFS (void *p) {
             sleep(processes->dt);
             sec += processes->dt;
             mudanca_de_contexto++;
-            pthread_mutex_unlock(&mutex);
             if (verbose) {
                 printf("[CPU liberada\t%s, %d]\n", processes->name, sched_getcpu());
                 printf("[Finalização\t%s]\n", processes->name);
             }
             fprintf(exit_file, "%s %d %d\n", processes->name, sec, sec - processes->t0);
+            pthread_mutex_unlock(&mutex);
 
             return NULL;
         }
@@ -116,12 +116,12 @@ void *ThreadSRTN (void *p) {
             sleep(processes->dt);
             sec += processes->dt;
             mudanca_de_contexto++;
-            pthread_mutex_unlock(&mutex);
             if (verbose) {
                 printf("[CPU liberada\t%s, %d]\n", processes->name, sched_getcpu());
                 printf("[Finalização\t%s]\n", processes->name);
             }
             fprintf(exit_file, "%s %d %d\n", processes->name, sec, sec - processes->t0);
+            pthread_mutex_unlock(&mutex);
 
             return NULL;
         }
