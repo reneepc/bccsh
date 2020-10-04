@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
 
     int num_processes = atoi(argv[1]);
     char file_name[MAX_BUF];
-    snprintf(file_name, MAX_BUF, "%d-processos", num_processes);
+    snprintf(file_name, MAX_BUF, "entrada/%d-processos", num_processes);
     FILE* processes = fopen(file_name, "w");
 
     char line[MAX_BUF];
