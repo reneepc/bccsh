@@ -135,14 +135,81 @@ A execução usou como base:
 \begin{frame}
 \frametitle{Máquinas Utilizadas}
 
-Foram utilizadas duas máquinas diferentes, uma com 12 e outra com 8 CPUs, as quais estão descritas no diretório doc
-    pelos arquivos doc/desc\_comp1 e doc/desc\_comp2 que registram as saídas do comando lscpu para cada uma das máquinas.
+Foram utilizadas duas máquinas diferentes, uma com 12 e outra com 8 CPUs, as quais estão descritas nos slides a seguir, que registram as saídas do comando lscpu para cada uma das máquinas.
 
 
 \begin{block}{Limitações}
 A máquina 1, com 12 núcleos, sofreu aparente limitação pela utilização do Windows Subsystem for Linux, uma vez que
     apenas uma CPU parece ter sido utilizada, o que pode ser observado pela saída "0" no modo verboso do simulador.
 \end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Máquina 1}
+
+\begin{columns}
+\begin{column}{0.7\textwidth}
+\scriptsize{Architecture:        x86\_64\\
+CPU op-mode(s):      32-bit, 64-bit\\
+Byte Order:          Little Endian\\
+Address sizes:       36 bits physical, 48 bits virtual\\
+CPU(s):              12\\
+On-line CPU(s) list: 0-11\\
+Thread(s) per core:  2\\
+Core(s) per socket:  6\\
+Socket(s):           1\\
+Vendor ID:           GenuineIntel\\
+CPU family:          6\\
+Model:               158\\
+Model name:          Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz\\
+Stepping:            10\\
+CPU MHz:             2601.000\\
+CPU max MHz:         2601.0000\\
+BogoMIPS:            5202.00\\
+Virtualization:      VT-x\\
+Hypervisor vendor:   Windows Subsystem for Linux\\
+Virtualization type: container\\}
+\end{column}
+\begin{column}{0.3\textwidth}
+\scriptsize{Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm pni pclmulqdq dtes64 monitor ds\_cpl vmx est tm2 ssse3 fma cx16 xtpr pdcm pcid sse4\_1 sse4\_2 x2apic movbe popcnt tsc\_deadline\_timer aes xsave osxsave avx f16c rdrand lahf\_lm abm 3dnowprefetch fsgsbase tsc\_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel\_pt ibrs ibpb stibp ssbd}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Máquina 2}
+
+\begin{columns}
+\begin{column}{0.7\textwidth}
+\scriptsize{Architecture:          x86\_64 \\
+CPU op-mode(s):        32-bit, 64-bit\\
+Byte Order:            Little Endian\\
+CPU(s):                8\\
+On-line CPU(s) list:   0-7\\
+Thread(s) per core:    2\\
+Core(s) per socket:    4\\
+Socket(s):             1\\
+NUMA node(s):          1\\
+Vendor ID:             GenuineIntel\\
+CPU family:            6\\
+Model:                 42\\
+Model name:            Intel(R) Core(TM) i7-2700K CPU @ 3.50GHz\\
+Stepping:              7\\
+CPU MHz:               4393.984\\
+CPU max MHz:           4600,0000\\
+CPU min MHz:           1600,0000\\
+BogoMIPS:              6984.19\\
+Virtualization:        VT-x\\
+L1d cache:             32K\\
+L1i cache:             32K\\
+L2 cache:              256K\\
+L3 cache:              8192K\\
+NUMA node0 CPU(s):     0-7\\}
+\end{column}
+\begin{column}{0.3\textwidth}
+\scriptsize{Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant\_tsc arch\_perfmon pebs bts rep\_good nopl xtopology nonstop\_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds\_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4\_1 sse4\_2 popcnt tsc\_deadline\_timer aes xsave avx lahf\_lm epb pti ssbd ibrs ibpb stibp tpr\_shadow vnmi flexpriority ept vpid xsaveopt dtherm ida arat pln pts md\_clear flush\_l1d}
+\end{column}
+\end{columns}
 \end{frame}
 \end{document}
 
