@@ -2,9 +2,6 @@ bccsh: bccsh.c bccsh.h parser.o util.h doc/apresentacao.pdf gerador_de_processos
 	gcc bccsh.c parser.o -o bccsh -I `pkg-config --cflags --libs readline`
 	gcc -pthread ep1.c -o ep1 -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -Wno-incompatible-pointer-types
 	gcc gerador_de_processos/gerador.c -o gerador_de_processos/gerador
-	./gerador_de_processos/gerador 5
-	./gerador_de_processos/gerador 50
-	./gerador_de_processos/gerador 500
 	rm *.o
 
 doc/apresentacao.pdf: doc/apresentacao.tex
@@ -17,3 +14,8 @@ doc/apresentacao.pdf: doc/apresentacao.tex
 parser.o: parser.c parser.h util.h
 	gcc parser.c -c
 
+entradas: 
+	mkdir entrada
+	./gerador_de_processos/gerador 5
+	./gerador_de_processos/gerador 50
+	./gerador_de_processos/gerador 500
