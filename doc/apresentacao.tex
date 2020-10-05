@@ -4,6 +4,7 @@
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{placeins}
+\usepackage{blindtext}
 \usetheme{Madrid}
 
 \author{Renê Cardozo - 9797315 \\ 
@@ -77,7 +78,8 @@ O simulador de escalonamento de processos é definido no arquivo ep1.c, no qual 
     escalonamento com os algoritmos First-Come, First-Served (FCFS) e Shortest Remaining Time Next (SRTN).
 
 \begin{block}{Round-Robin}
-O algoritmo Round-Robin não foi implementado por falta de tempo.
+O algoritmo Round-Robin está apenas no esboço de uma tentativa de implementação, contudo não foi possível testá-lo como
+os outros e sua execução não está correta.
 \end{block}
 
 Neste arquivo é utilizada a função read\_file para ler os arquivos da pasta entrada, na qual são armazenados os arquivos
@@ -108,7 +110,7 @@ nome do processo o tempo atual do simulador e o tempo do simulador menos o tempo
 \begin{frame}
 \frametitle{Gerador de Processos}
 A criação de processos para uso pelo simulador é feito pelo arquivo gerador.c dentro da pasta gerador\_de\_processos.
-    Este programa é executado da forma "./gerador <número-de-processos [semente]", sendo a semente opcional e por
+    Este programa é executado da forma "./gerador <número-de-processos> [semente]", sendo a semente opcional e por
     padrão igual a 0.
 \begin{itemize}
     \item t0 inicia-se com 1 e é incrementado em um inteiro aleatório entre 0 e 3.
@@ -220,15 +222,15 @@ NUMA node0 CPU(s):     0-7\\}
 
 \begin{figure}[!htb]
 \minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{imgs/deadline5-1.png}
+  \includegraphics[width=\linewidth]{imgs/deadline5-1}
   \caption{M1, 5 threads}\label{fig:awesome_image1}
 \endminipage\hfill
 \minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{imgs/deadline50-1.png}
+  \includegraphics[width=\linewidth]{imgs/deadline50-1}
   \caption{M1, 50 threads}\label{fig:awesome_image2}
 \endminipage\hfill
 \minipage{0.32\textwidth}%
-  \includegraphics[width=\linewidth]{imgs/deadline500-1.png}
+  \includegraphics[width=\linewidth]{imgs/deadline500-1}
   \caption{M1, 500 threads}\label{fig:awesome_image3}
 \endminipage
 \end{figure}
@@ -241,15 +243,15 @@ NUMA node0 CPU(s):     0-7\\}
 
 \begin{figure}[!htb]
 \minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{imgs/deadline5-2.png}
+  \includegraphics[width=\linewidth]{imgs/deadline5-2}
   \caption{M2, 5 threads}\label{fig:awesome_image1}
 \endminipage\hfill
 \minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{imgs/deadline50-2.png}
+  \includegraphics[width=\linewidth]{imgs/deadline50-2}
   \caption{M2, 50 threads}\label{fig:awesome_image2}
 \endminipage\hfill
 \minipage{0.32\textwidth}%
-  \includegraphics[width=\linewidth]{imgs/deadline500-2.png}
+  \includegraphics[width=\linewidth]{imgs/deadline500-2}
   \caption{M2, 500 threads}\label{fig:awesome_image3}
 \endminipage
 \end{figure}
@@ -263,9 +265,11 @@ NUMA node0 CPU(s):     0-7\\}
 
 Os resultados \textbf{não} foram os esperados.
 
+\begin{itemize}
 \item Era de se esperar que o SRTN cumprisse mais deadlines que o FCFS. Além disso não acontecer, ambos escalonadores apresentaram \textit{exatamente} o mesmo desempenho em \textbf{todas} as execuções do código. 
 
 \item Após analisar os resultados e revisitar o código, identificamos o motivo do erro. Ao invés de implementar o SRTN (que deveria suspender um processo quando um mais curto chegasse), implementamos o Shortest Remaining Time First (ordenamos o vetor de processos com base no t0 + dt, mas não houve qualquer comunicação entre as threads para que o processo mais curto disponível interrompesse a execução do processo atual). Infelizmente, quando nos demos conta disso, não havia mais tempo para corrigir a implementação.
+\end{itemize}
 
 \end{frame}
 
@@ -273,21 +277,23 @@ Os resultados \textbf{não} foram os esperados.
 \begin{frame}
 \frametitle{Gráficos de Mudanças de Contexto: Análise}
 
-
+\begin{itemize}
 \item \textbf{(Falta de) diferença entre as máquinas:} era esperado que o desempenho em ambas fosse o mesmo. Não havia threads correndo em paralelo, já que nossa implementação simulava apenas 1 CPU.
 
 \item \textbf{(Falta de) diferença entre as execuções:} \textit{não} era esperado que todas as execuções levassem a exatamente os mesmos resultados. Deveriam ter havido ocasiões em que mais de uma thread poderia ter acesso ao mutex, o que levaria a resultados diferentes. Entretanto, os processos sempre foram executados na ordem [0, 1, 2, ..., n]. Como todas as 30 execuções levaram ao mesmo resultado, não fazia sentido incluir a média e intervalo de confiança nos gráficos.
 
 \item Acreditamos que isso se deve ao fato de cada pthread\_join ter sido dentro do loop de criação de cada thread. Ou seja: cada thread foi concluída logo após sua criação. Não haviam threads existentes simultaneamente, o que impediu que duas ou mais threads pudessem entrar em condição de corrida, que seria o motivo de ter resultados diferentes em diferentes execuções.
-
+\end{itemize}
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Gráficos de Mudanças de Contexto: Análise}
+\begin{itemize}
 \item A baixíssima taxa de cumprimento de deadlines também não era esperada. Isso foi um problema com os arquivos de entrada que utilizamos, e não com o algoritmo. Todos os deadlines que geramos automaticamente eram muito curtos e muito próximos, e não poderiam ser cumpridos em tempo por uma máquina com uma única CPU.
 
 \item Se tivéssemos gerado prazos maiores para os processos, ou simulados mais CPUs, mais deadlines teriam sido cumpridos. 
+\end{itemize}
 \end{frame}
 
 
@@ -298,15 +304,15 @@ Os resultados \textbf{não} foram os esperados.
 
 \begin{figure}[!htb]
 \minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{imgs/contex5-1.png}
+  \includegraphics[width=\linewidth]{imgs/contex5-1}
   \caption{M1, 5 threads}\label{fig:awesome_image1}
 \endminipage\hfill
 \minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{imgs/contex50-1.png}
+  \includegraphics[width=\linewidth]{imgs/contex50-1}
   \caption{M1, 50 threads}\label{fig:awesome_image2}
 \endminipage\hfill
 \minipage{0.32\textwidth}%
-  \includegraphics[width=\linewidth]{imgs/contex500-1.png}
+  \includegraphics[width=\linewidth]{imgs/contex500-1}
   \caption{M1, 500 threads}\label{fig:awesome_image3}
 \endminipage
 \end{figure}
@@ -319,15 +325,15 @@ Os resultados \textbf{não} foram os esperados.
 
 \begin{figure}[!htb]
 \minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{imgs/contex5-2.png}
+  \includegraphics[width=\linewidth]{imgs/contex5-2}
   \caption{M2, 5 threads}\label{fig:awesome_image1}
 \endminipage\hfill
 \minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{imgs/contex50-2.png}
+  \includegraphics[width=\linewidth]{imgs/contex50-2}
   \caption{M2, 50 threads}\label{fig:awesome_image2}
 \endminipage\hfill
 \minipage{0.32\textwidth}%
-  \includegraphics[width=\linewidth]{imgs/contex500-2.png}
+  \includegraphics[width=\linewidth]{imgs/contex500-2}
   \caption{M2, 500 threads}\label{fig:awesome_image3}
 \endminipage
 \end{figure}
@@ -344,10 +350,12 @@ Os resultados \textbf{não} foram os esperados.
 
 Mais uma vez, os resultados \textbf{não} foram os esperados.
 
+\begin{itemize}
 \item Se houvéssemos implementado o SRTN da forma correta, ele apresentaria mais mudanças de contexto que o FCFS. Entretanto, considerando que (infeliz e erroneamente) implementamos o Shortest Remaining Time Next, faz sentido que o número de mudanças de contexto seja o mesmo do escalonador FCFS.
 
 \item Como explicado no gráfico anterior, suspeitamos que utilizamos o pthread\_join de forma errada, o que levou à ausência de qualquer condição de corrida entre threads. Tendo isso em vista, faz sentido que todos os resultados mais uma vez tenham sido idênticos.
 
+\end{itemize}
 
 \end{frame}
 

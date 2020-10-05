@@ -1,9 +1,11 @@
 Autores: Renê Cardozo - 9797315
          Verônica Stocco - 6828626
 
-A compilação do arquivo é realizada apenas utilizando o comando make, o qual é responsável por compilar o shell (bccsh),
+A compilação do arquivo é realizada apenas utilizando o comando "make", o qual é responsável por compilar o shell (bccsh),
 o simulador de escalonador de processos (ep1), o gerador de arquivos de processos (gerador_de_processos/gerador) e a
 apresentação (doc/apresentação.pdf). Além de remover arquivos intermediários da compilação dos programas e do pdf.
+
+O comando make deve ser utilizado no diretório raiz do projeto.
 
 A execução do bccsh é feita utilizando "./bccsh".
 
