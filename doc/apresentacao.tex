@@ -92,10 +92,10 @@ A partir do primeiro parâmetro fornecido para o executável ./ep1 temos a escol
 
 A implementação dos algoritmos foi feita da seguinte forma:
 \begin{itemize}
-    \item FCFS: Executa as threads por diretamente do array de processos montado na leitura, uma vez que supõe-se que os
-        processos estejam ordenados por ordem de chegada.
+    \item FCFS: Executa as threads diretamente do array de processos montado na leitura, uma vez que supõe-se que os processos estejam ordenados por ordem de chegada.
     \item SRTN: Reordena o array de processos com base na soma dos atributos t0 e dt, assim, priorizam-se os processos
         com menor dt que chegam antes.
+    \item RR: Cria as threads e envia um signal para que a primeira possa executar. A thread i executa por um QUANTUM, e envia um signal para que a thread (i + 1) \% process_count possa executar. A implementação não está funcionando. 
 \end{itemize}
 
 Os algoritmos armazenam a saída no arquivo especificado pelo terceiro parâmetro do executável ./ep1, no qual é escrito o
