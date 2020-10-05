@@ -92,13 +92,14 @@ void *ThreadFCFS (void *p) {
         if(processes->t0 <= sec) {
             pthread_mutex_lock(&mutex);
             if (verbose)    
-                fprintf(stderr, "[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu());
+                fprintf(stderr, "[CPU em uso\t\t%s, %d]\n", processes->name, sched_getcpu());
             sleep(processes->dt);
             sec += processes->dt;
             mudanca_de_contexto++;
             if (verbose) {
-                fprintf(stderr, "[CPU liberada\t%s, %d]\n", processes->name, sched_getcpu());
-                fprintf(stderr, "[Finalização\t%s]\n", processes->name);
+                fprintf(stderr, "[CPU liberada\t\t%s, %d]\n", processes->name, sched_getcpu());
+                fprintf(stderr, "[Finalização\t\t%s %d %d]\n", processes->name, sec, sec - processes->t0);
+                fprintf(stderr, "[Mud. de Contexto\t%d]\n", mudanca_de_contexto);
             }
             fprintf(exit_file, "%s %d %d\n", processes->name, sec, sec - processes->t0);
             pthread_mutex_unlock(&mutex);
@@ -142,13 +143,14 @@ void *ThreadSRTN (void *p) {
     while(1){
         pthread_mutex_lock(&mutex);
         if (verbose)    
-            fprintf(stderr, "[CPU em uso\t%s, %d]\n", processes->name, sched_getcpu());
+            fprintf(stderr, "[CPU em uso\t\t%s, %d]\n", processes->name, sched_getcpu());
         sleep(processes->dt);
         sec += processes->dt;
         mudanca_de_contexto++;
         if (verbose) {
-            fprintf(stderr, "[CPU liberada\t%s, %d]\n", processes->name, sched_getcpu());
-            fprintf(stderr, "[Finalização\t%s]\n", processes->name);
+            fprintf(stderr, "[CPU liberada\t\t%s, %d]\n", processes->name, sched_getcpu());
+            fprintf(stderr, "[Finalização\t\t%s %d %d]\n", processes->name, sec, sec - processes->t0);
+                fprintf(stderr, "[Mud. de Contexto\t%d]\n", mudanca_de_contexto);
         }
         fprintf(exit_file, "%s %d %d\n", processes->name, sec, sec - processes->t0);
         pthread_mutex_unlock(&mutex);
@@ -185,14 +187,15 @@ void *ThreadRR (void *i) {
             pthread_mutex_lock(&locks[id]);
             pthread_cond_wait(&cond[id], &locks[id]);
             if (verbose)    
-                printf("[CPU em uso\t%s, %d]\n", processes[id].name, sched_getcpu());
+                printf("[CPU em uso\t\t%s, %d]\n", processes[id].name, sched_getcpu());
             sleep(QUANTUM);
             sec += QUANTUM;
             mudanca_de_contexto++;
             processes[id].dt -= QUANTUM;
             if (verbose) {
-                printf("[CPU liberada\t%s, %d]\n", processes[id].name, sched_getcpu());
-                printf("[Finalização\t%s]\n", processes[id].name);
+                printf("[CPU liberada\t\t%s, %d]\n", processes[id].name, sched_getcpu());
+                printf(stderr, "[Finalização\t\t%s %d %d]\n", processes->name, sec, sec - processes->t0);
+                fprintf(stderr, "[Mud. de Contexto\t%d]\n", mudanca_de_contexto);
             }
             fprintf(exit_file, "%s %d %d\n", processes[id].name, sec, sec - processes->t0);
             pthread_cond_signal(&cond[(id + 1) % process_count]);
